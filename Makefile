@@ -19,5 +19,5 @@ utilitario2:
 	$(CC) $(OBJ2) -o $(OBJ2_EXEC) $(FLAGS_OBJ2)
 
 clean:
-	rm -rf input* fifo* $(OBJ1_EXEC) $(OBJ2_EXEC)
+	rm -rf *.txt fifo* out* $(OBJ1_EXEC) $(OBJ2_EXEC)
 
