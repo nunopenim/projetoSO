@@ -10,11 +10,7 @@ typedef struct _writeFifoArgs {
 } writeFifoArgs;
 
 typedef struct _pack {
-    char * uuid;
-    char * peso;
-    char * airport;
+    char uuid[37];
+    char peso[5];
+    char airport[4];
 } package;
-
-typedef struct _simArgs {
-    char * inFifoName;
-} simArgs;

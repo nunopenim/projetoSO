@@ -48,16 +48,16 @@ int main(int argc, char *argv[]){
 	}
 	writeFifoArgs * args0 = malloc(sizeof(writeFifoArgs));
 	(*args0).fdfile = fd[0];
-	(*args0).fifoname = "fifo0";
+	(*args0).fifoname = "fifoin0";
 	writeFifoArgs * args1 = malloc(sizeof(writeFifoArgs));
 	(*args1).fdfile = fd[1];
-	(*args1).fifoname = "fifo1";
+	(*args1).fifoname = "fifoin1";
 	writeFifoArgs * args2 = malloc(sizeof(writeFifoArgs));
 	(*args2).fdfile = fd[2];
-	(*args2).fifoname = "fifo2";
+	(*args2).fifoname = "fifoin2";
     writeFifoArgs * args3 = malloc(sizeof(writeFifoArgs));
 	(*args3).fdfile = 0;
-	(*args3).fifoname = "fifo3";
+	(*args3).fifoname = "fifoin3";
 	pthread_create(&threads[0], NULL, writeFifo, (void*) args0);
 	pthread_create(&threads[1], NULL, writeFifo, (void*) args1);
 	pthread_create(&threads[2], NULL, writeFifo, (void*) args2);
