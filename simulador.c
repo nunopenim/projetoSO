@@ -6,7 +6,7 @@
 #include "entities.h"
 
 #define THREADSIN 4
-#define QUEUESIZE 8192 //mudar
+#define QUEUESIZE 4096 //mudar
 #define BUFFERSIZE 46
 
 //threading
@@ -17,13 +17,13 @@ pthread_mutex_t queueMut;
 package dados[QUEUESIZE];
 int dadosPointer = -1;
 
-boolean push(package p, package dados[], int *pointer) {
+boolean push(package p, package dat[], int *pointer) {
 	if ((*pointer)+1 >= QUEUESIZE) {
 		return FALSE;
 	}
 	else {
 		(*pointer)++;
-		dados[(*pointer)] = p;
+		dat[(*pointer)] = p;
 		return TRUE;
 	}
 }
