@@ -185,8 +185,18 @@ void *terminal(void *_args) {
 		sem = &o9;
 	}
 	else {
-		return; //poupar segfaults e rebentar logo com o programa...
-	}	
+		pthread_exit(NULL);
+		return; //rebentar com a thread, poupar um segfault
+	}
+	while(1) {
+		while (*pointer > -1) {
+			package a = pop(array, pointer);
+			char fifoString[50];
+			a.saida = time(NULL);
+			sprintf(fifoString,"%s,%s,%s,%ld,%ld",a.uuid, a.peso, a.airport, a.entrada, a.saida);
+		}
+	}
+	
 }
 
 void *distributor() {
