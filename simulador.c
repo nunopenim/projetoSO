@@ -17,13 +17,13 @@ pthread_mutex_t queueMut;
 package dados[QUEUESIZE];
 int dadosPointer = -1;
 
-boolean push(package p) {
-	if (dadosPointer+1 >= QUEUESIZE) {
+boolean push(package p, package dados[], int *pointer) {
+	if ((*pointer)+1 >= QUEUESIZE) {
 		return FALSE;
 	}
 	else {
-		dadosPointer++;
-		dados[dadosPointer] = p;
+		(*pointer)++;
+		dados[(*pointer)] = p;
 		return TRUE;
 	}
 }
@@ -61,7 +61,7 @@ void *collector(void *_args) {
 		}
 		p.airport[4] = '\0';
 		pthread_mutex_lock(&queueMut);
-		push(p);
+		push(p, dados, &dadosPointer);
 		pthread_mutex_unlock(&queueMut);
 	}
 }
