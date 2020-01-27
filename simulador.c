@@ -89,7 +89,6 @@ void *collector(void *_args) {
 		p.entrada = time(NULL);
 		sem_wait(&queueIn);
 		push(p, dados, &dadosPointer);
-		printf("%s %s %s %ld\n", dados[dadosPointer].uuid, dados[dadosPointer].peso, dados[dadosPointer].airport, dados[dadosPointer].entrada);
 		sem_post(&queueIn);
 		sleep(0.5); //500ms
 	}
