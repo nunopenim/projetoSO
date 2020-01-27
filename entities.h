@@ -15,4 +15,6 @@ typedef struct _pack {
     char uuid[38];
     char peso[5];
     char airport[4];
+    time_t entrada;
+    time_t saida;
 } package;

@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <fcntl.h>
+#include <time.h>
 
 #include "entities.h"
 
@@ -26,6 +27,29 @@ boolean push(package p, package dat[], int *pointer) {
 		dat[(*pointer)] = p;
 		return TRUE;
 	}
+}
+
+void clean(package dat[], int index) {
+	dat[index].uuid[0] = '\0';
+	dat[index].peso[0] = '\0';
+	dat[index].airport[0] = '\0';
+}
+
+void reset(package dat[], int *pointer) {
+	for(int i = 0; i<(sizeof(*dat)/sizeof(package)); i++) {
+		clean(dat, i);
+	}
+	(*pointer) = 0;
+}
+
+package pop(package dat[], int *pointer) {
+	package p;
+	if ((*pointer) > -1) {
+		p = dat[(*pointer)];
+		clean(dat, (*pointer));
+		(*pointer)--;
+	}
+	return p;
 }
 
 //Programa
@@ -60,6 +84,7 @@ void *collector(void *_args) {
 			c = fgetc(fifo);
 		}
 		p.airport[4] = '\0';
+		p.entrada = time(NULL);
 		pthread_mutex_lock(&queueMut);
 		push(p, dados, &dadosPointer);
 		pthread_mutex_unlock(&queueMut);
@@ -67,6 +92,7 @@ void *collector(void *_args) {
 }
 
 int main() {
+	reset(dados, &dadosPointer);
 	for (int i = 0; i < THREADSIN; i++) {
 		pthread_create(&threads_in[i], NULL, collector, (void *) i);
 	}
