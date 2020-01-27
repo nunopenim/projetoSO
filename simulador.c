@@ -4,50 +4,73 @@
 #include <fcntl.h>
 
 #include "entities.h"
-#include "aux_funcs.h"
 
 #define THREADSIN 4
-#define QUEUESIZE 128
+#define QUEUESIZE 8192 //mudar
 #define BUFFERSIZE 46
 
-package dados[QUEUESIZE];
+//threading
+pthread_t threads_in[THREADSIN];
+pthread_mutex_t queueMut;
 
-void *simThread(void *_args) {
-	int fd = (int) _args;
-	char buffer[BUFFERSIZE];
-	char prev_ec[BUFFERSIZE] = ""; //error correction
-	while(read(fd, buffer, BUFFERSIZE) > 0) {
-		char fullStr[BUFFERSIZE];
-		strcpy(fullStr, buffer);
-		char * remaining = fullStr;
-		char * temp_uuid = strtok_r(remaining, ",", &remaining);
-		char uuid[BUFFERSIZE];
-		strcpy(uuid, prev_ec);
-		strcat(uuid, temp_uuid);
-		char * peso = strtok_r(remaining, ",", &remaining);
-		char * aeroporto = strtok_r(remaining, "\n", &remaining);
-		if (remaining==NULL) {
-			strcpy(prev_ec, "");
+//Queue operators
+package dados[QUEUESIZE];
+int dadosPointer = -1;
+
+boolean push(package p) {
+	if (dadosPointer+1 >= QUEUESIZE) {
+		return FALSE;
+	}
+	else {
+		dadosPointer++;
+		dados[dadosPointer] = p;
+		return TRUE;
+	}
+}
+
+//Programa
+void *collector(void *_args) {
+	int fifoNum = (int) _args;
+	char stringName[9];
+	sprintf(stringName, "fifoin%d", fifoNum);
+	FILE* fifo = fopen(stringName, "r");
+	char c = fgetc(fifo);
+	while(c != EOF) {
+		package p;
+		int i = 0;
+		while(c != ',') {
+			p.uuid[i] = c;
+			i++;
+			c = fgetc(fifo); 
 		}
-		else{
-			strcpy(prev_ec, remaining);
+		p.uuid[37] = '\0';
+		c = fgetc(fifo);
+		i = 0;
+		while(c != ',') {
+			p.peso[i] = c;
+			i++;
+			c = fgetc(fifo);
 		}
-		printf("%s\n", uuid);
-		printf("%s\n", peso);
-		printf("%s\n", aeroporto);
-		strcpy(buffer, "");
-		strcpy(fullStr, "");
+		p.peso[i] = '\0';
+		c = fgetc(fifo);
+		i = 0;
+		while(c != '\0' && c != '\n') {
+			p.airport[i] = c;
+			i++;
+			c = fgetc(fifo);
+		}
+		p.airport[4] = '\0';
+		pthread_mutex_lock(&queueMut);
+		push(p);
+		pthread_mutex_unlock(&queueMut);
 	}
 }
 
 int main() {
-	pthread_t threads_in[THREADSIN];
-	int fifoFd[THREADSIN];
-	fifoFd[0] = open("fifoin0", O_RDONLY);
-	fifoFd[1] = open("fifoin1", O_RDONLY);
-	fifoFd[2] = open("fifoin2", O_RDONLY);
-	fifoFd[3] = open("fifoin3", O_RDONLY);
-	pthread_create(&threads_in[0], NULL, simThread, (void *) fifoFd[0]);
+	pthread_create(&threads_in[0], NULL, collector, (void *) 0);
+	pthread_create(&threads_in[1], NULL, collector, (void *) 1);
+	pthread_create(&threads_in[2], NULL, collector, (void *) 2);
+	pthread_create(&threads_in[3], NULL, collector, (void *) 3);
 	pthread_exit(NULL);
     return 0;
 }
