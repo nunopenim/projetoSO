@@ -9,16 +9,40 @@
 #include "entities.h"
 
 #define THREADSIN 4
+#define THREADSOUT 10
 #define QUEUESIZE 4096 //mudar
 #define BUFFERSIZE 46
 
 //threading
 pthread_t threads_in[THREADSIN];
+pthread_t threads_out[THREADSOUT];
+pthread_t thread_dist;
 sem_t queueIn;
 
 //Queue operators
 package dados[QUEUESIZE];
 int dadosPointer = -1;
+
+package out0[QUEUESIZE];
+package out1[QUEUESIZE];
+package out2[QUEUESIZE];
+package out3[QUEUESIZE];
+package out4[QUEUESIZE];
+package out5[QUEUESIZE];
+package out6[QUEUESIZE];
+package out7[QUEUESIZE];
+package out8[QUEUESIZE];
+package out9[QUEUESIZE];
+int out0P = -1;
+int out1P = -1;
+int out2P = -1;
+int out3P = -1;
+int out4P = -1;
+int out5P = -1;
+int out6P = -1;
+int out7P = -1;
+int out8P = -1;
+int out9P = -1;
 
 boolean push(package p, package dat[], int *pointer) {
 	if ((*pointer)+1 >= QUEUESIZE) {
@@ -90,7 +114,74 @@ void *collector(void *_args) {
 		sem_wait(&queueIn);
 		push(p, dados, &dadosPointer);
 		sem_post(&queueIn);
-		sleep(0.5); //500ms
+		sleep(1);
+	}
+}
+
+void *terminal(void *_args) {
+	int air = (int) _args;
+	package *array;
+	int *pointer;
+	if (air == 0) {
+		array = out0;
+		pointer = &out0P;
+	}
+	else if (air == 1) {
+		array = out1;
+		pointer = &out1P;
+	}
+	else if (air == 2) {
+		array = out2;
+		pointer = &out2P;
+	}
+	else if (air == 3) {
+		array = out3;
+		pointer = &out3P;
+	}
+	else if (air == 4) {
+		array = out4;
+		pointer = &out4P;
+	}
+	else if (air == 5) {
+		array = out5;
+		pointer = &out5P;
+	}
+	else if (air == 6) {
+		array = out6;
+		pointer = &out6P;
+	}
+	else if (air == 7) {
+		array = out7;
+		pointer = &out7P;
+	}
+	else if (air == 8) {
+		array = out8;
+		pointer = &out8P;
+	}
+	else if (air == 9) {
+		array = out9;
+		pointer = &out9P;
+	}
+	else {
+		return; //poupar segfaults e rebentar logo com o programa...
+	}	
+}
+
+void *distributor() {
+	for (int i = 0; i < THREADSOUT; i++) {
+		pthread_create(&threads_out[i], NULL, terminal, (void *) i);
+	}
+	while(1) {
+		while(dadosPointer > -1) {
+			sem_wait(&queueIn);
+			package a = pop(dados, &dadosPointer);
+			sem_post(&queueIn);
+			int dest = getAir(a.airport);
+			if (dest == -1) {
+				continue;
+			}
+			
+		}
 	}
 }
 
@@ -100,6 +191,7 @@ int main() {
 	for (int i = 0; i < THREADSIN; i++) {
 		pthread_create(&threads_in[i], NULL, collector, (void *) i);
 	}
+	pthread_create(&thread_dist, NULL, distributor, NULL);
 	pthread_exit(NULL);
 	sem_destroy(&queueIn);
     exit(0);
