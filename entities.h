@@ -53,8 +53,3 @@ typedef struct _pack {
     time_t entrada;
     time_t saida;
 } package;
-
-typedef struct _termArgs {
-	sem_t * sem;
-	package * awb;
-} terminalArgs;

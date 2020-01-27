@@ -17,12 +17,23 @@
 pthread_t threads_in[THREADSIN];
 pthread_t threads_out[THREADSOUT];
 pthread_t thread_dist;
+
+//semaforos
 sem_t queueIn;
+sem_t o0;
+sem_t o1;
+sem_t o2;
+sem_t o3;
+sem_t o4;
+sem_t o5;
+sem_t o6;
+sem_t o7;
+sem_t o8;
+sem_t o9;
 
 //Queue operators
 package dados[QUEUESIZE];
 int dadosPointer = -1;
-
 package out0[QUEUESIZE];
 package out1[QUEUESIZE];
 package out2[QUEUESIZE];
@@ -122,45 +133,56 @@ void *terminal(void *_args) {
 	int air = (int) _args;
 	package *array;
 	int *pointer;
+	sem_t *sem;
 	if (air == 0) {
 		array = out0;
 		pointer = &out0P;
+		sem = &o0;
 	}
 	else if (air == 1) {
 		array = out1;
 		pointer = &out1P;
+		sem = &o1;
 	}
 	else if (air == 2) {
 		array = out2;
 		pointer = &out2P;
+		sem = &o2;
 	}
 	else if (air == 3) {
 		array = out3;
 		pointer = &out3P;
+		sem = &o3;
 	}
 	else if (air == 4) {
 		array = out4;
 		pointer = &out4P;
+		sem = &o4;
 	}
 	else if (air == 5) {
 		array = out5;
 		pointer = &out5P;
+		sem = &o5;
 	}
 	else if (air == 6) {
 		array = out6;
 		pointer = &out6P;
+		sem = &o6;
 	}
 	else if (air == 7) {
 		array = out7;
 		pointer = &out7P;
+		sem = &o7;
 	}
 	else if (air == 8) {
 		array = out8;
 		pointer = &out8P;
+		sem = &o8;
 	}
 	else if (air == 9) {
 		array = out9;
 		pointer = &out9P;
+		sem = &o9;
 	}
 	else {
 		return; //poupar segfaults e rebentar logo com o programa...
@@ -199,6 +221,16 @@ int main() {
 	reset(out9, &out9P);
 	sleep(1); //syncronism;
 	sem_init(&queueIn, 0, 1);
+	sem_init(&o0, 0, 1);
+	sem_init(&o1, 0, 1);
+	sem_init(&o2, 0, 1);
+	sem_init(&o3, 0, 1);
+	sem_init(&o4, 0, 1);
+	sem_init(&o5, 0, 1);
+	sem_init(&o6, 0, 1);
+	sem_init(&o7, 0, 1);
+	sem_init(&o8, 0, 1);
+	sem_init(&o9, 0, 1);
 	for (int i = 0; i < THREADSIN; i++) {
 		pthread_create(&threads_in[i], NULL, collector, (void *) i);
 	}
