@@ -71,5 +71,5 @@ int main() {
 		pthread_create(&threads_in[i], NULL, collector, (void *) i);
 	}
 	pthread_exit(NULL);
-    return 0;
+    exit(0);
 }
