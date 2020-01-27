@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <time.h>
+#include <semaphore.h>
+#include <unistd.h>
 
 #include "entities.h"
 
@@ -12,7 +14,7 @@
 
 //threading
 pthread_t threads_in[THREADSIN];
-pthread_mutex_t queueMut;
+sem_t queueIn;
 
 //Queue operators
 package dados[QUEUESIZE];
@@ -85,17 +87,21 @@ void *collector(void *_args) {
 		}
 		p.airport[4] = '\0';
 		p.entrada = time(NULL);
-		pthread_mutex_lock(&queueMut);
+		sem_wait(&queueIn);
 		push(p, dados, &dadosPointer);
-		pthread_mutex_unlock(&queueMut);
+		printf("%s %s %s %ld\n", dados[dadosPointer].uuid, dados[dadosPointer].peso, dados[dadosPointer].airport, dados[dadosPointer].entrada);
+		sem_post(&queueIn);
+		sleep(0.5); //500ms
 	}
 }
 
 int main() {
 	reset(dados, &dadosPointer);
+	sem_init(&queueIn, 0, 1);
 	for (int i = 0; i < THREADSIN; i++) {
 		pthread_create(&threads_in[i], NULL, collector, (void *) i);
 	}
 	pthread_exit(NULL);
+	sem_destroy(&queueIn);
     exit(0);
 }
