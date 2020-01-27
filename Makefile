@@ -13,7 +13,7 @@ OBJ1_EXEC=util1
 OBJ2_EXEC=util2
 OBJ3_EXEC=sim
 
-all: utilitario1 utilitario2
+all: utilitario1 utilitario2 simulador
 
 utilitario1: 
 	$(CC) $(OBJ1) -o $(OBJ1_EXEC) $(FLAGS_OBJ1)
