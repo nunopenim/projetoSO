@@ -67,10 +67,9 @@ void *collector(void *_args) {
 }
 
 int main() {
-	pthread_create(&threads_in[0], NULL, collector, (void *) 0);
-	pthread_create(&threads_in[1], NULL, collector, (void *) 1);
-	pthread_create(&threads_in[2], NULL, collector, (void *) 2);
-	pthread_create(&threads_in[3], NULL, collector, (void *) 3);
+	for (int i = 0; i < THREADSIN; i++) {
+		pthread_create(&threads_in[i], NULL, collector, (void *) i);
+	}
 	pthread_exit(NULL);
     return 0;
 }
