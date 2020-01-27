@@ -187,6 +187,16 @@ void *distributor() {
 
 int main() {
 	reset(dados, &dadosPointer);
+	reset(out0, &out0P);
+	reset(out1, &out1P);
+	reset(out2, &out2P);
+	reset(out3, &out3P);
+	reset(out4, &out4P);
+	reset(out5, &out5P);
+	reset(out6, &out6P);
+	reset(out7, &out7P);
+	reset(out8, &out8P);
+	reset(out9, &out9P);
 	sem_init(&queueIn, 0, 1);
 	for (int i = 0; i < THREADSIN; i++) {
 		pthread_create(&threads_in[i], NULL, collector, (void *) i);
