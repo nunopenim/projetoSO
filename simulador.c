@@ -197,6 +197,7 @@ int main() {
 	reset(out7, &out7P);
 	reset(out8, &out8P);
 	reset(out9, &out9P);
+	sleep(1); //syncronism;
 	sem_init(&queueIn, 0, 1);
 	for (int i = 0; i < THREADSIN; i++) {
 		pthread_create(&threads_in[i], NULL, collector, (void *) i);
