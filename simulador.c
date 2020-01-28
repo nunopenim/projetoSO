@@ -212,7 +212,66 @@ void *distributor() {
 			if (dest == -1) {
 				continue;
 			}
-			
+			else if (dest == 0) {
+				sleep(1);
+				sem_wait(&o0);
+				push(a, out0, out0P);
+				sem_post(&o0);
+			}
+			else if (dest == 1) {
+				sleep(1);
+				sem_wait(&o1);
+				push(a, out1, out1P);
+				sem_post(&o1);
+			}
+			else if (dest == 2) {
+				sleep(1);
+				sem_wait(&o2);
+				push(a, out2, out2P);
+				sem_post(&o2);
+			}
+			else if (dest == 3) {
+				sleep(1);
+				sem_wait(&o3);
+				push(a, out3, out3P);
+				sem_post(&o3);
+			}
+			else if (dest == 4) {
+				sleep(1);
+				sem_wait(&o4);
+				push(a, out4, out4P);
+				sem_post(&o4);
+			}
+			else if (dest == 5) {
+				sleep(1);
+				sem_wait(&o5);
+				push(a, out5, out5P);
+				sem_post(&o5);
+			}
+			else if (dest == 6) {
+				sleep(1);
+				sem_wait(&o6);
+				push(a, out6, out6P);
+				sem_post(&o6);
+			}
+			else if (dest == 7) {
+				sleep(1);
+				sem_wait(&o7);
+				push(a, out7, out7P);
+				sem_post(&o7);
+			}
+			else if (dest == 8) {
+				sleep(1);
+				sem_wait(&o8);
+				push(a, out8, out8P);
+				sem_post(&o8);
+			}
+			else if (dest == 9) {
+				sleep(1);
+				sem_wait(&o9);
+				push(a, out9, out9P);
+				sem_post(&o9);
+			}
 		}
 	}
 }
