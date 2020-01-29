@@ -9,6 +9,7 @@
 #include <unistd.h>
 
 #include "entities.h"
+#include "aux_funcs.h"
 
 #define THREADSIN 4
 #define THREADSOUT 10
@@ -75,7 +76,7 @@ void clean(package dat[], int index) {
 }
 
 void reset(package dat[], int *pointer) {
-	for(int i = 0; i<(sizeof(*dat)/sizeof(package)); i++) {
+	for(int i = 0; i<QUEUESIZE; i++) {
 		clean(dat, i);
 	}
 	(*pointer) = -1;
@@ -83,6 +84,8 @@ void reset(package dat[], int *pointer) {
 
 package pop(package dat[], int *pointer) {
 	package p;
+	while((*pointer)==-1){ //wait cycle
+	}
 	if ((*pointer) > -1) {
 		p = dat[(*pointer)];
 		clean(dat, (*pointer));
@@ -204,11 +207,22 @@ void *terminal(void *_args) {
 	fifofd = open(fifoname, O_WRONLY);
 	while(1) {
 		while (*pointer > -1) {
+			sem_wait(sem);
 			package a = pop(array, pointer);
-			char fifoString[90];
-			a.saida = time(NULL);
-			sprintf(fifoString,"%s,%s,%s,%ld,%ld",a.uuid, a.peso, a.airport, a.entrada, a.saida);
-			write(fifofd, fifoString, strlen(fifoString));
+			sem_post(sem);
+			if (atoi(a.peso) < 1000) {
+				char fifoString[67];
+				a.saida = time(NULL);
+				fifoString[66] = '\n';
+				sprintf(fifoString,"%s,%s,%s,%ld,%ld",a.uuid, a.peso, a.airport, a.entrada, a.saida);
+				write(fifofd, fifoString, 67);
+			}
+			else {
+				char fifoString[68];
+				a.saida = time(NULL);
+				sprintf(fifoString,"%s,%s,%s,%ld,%ld\n",a.uuid, a.peso, a.airport, a.entrada, a.saida);
+				write(fifofd, fifoString, 68);
+			}
 		}
 	}
 	

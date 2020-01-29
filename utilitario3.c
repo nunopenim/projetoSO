@@ -31,18 +31,20 @@ void *logger(void *_args) {
 	while ((n = read(fifofd, buffer, BUFFERSIZE)) > 0){
 		sem_wait(&outputSem);
 		write(1, buffer, n);
+		write(1, "\n", 1);
 		write(logfd, buffer, n);
+		write(logfd, "\n", 1);
 		sem_post(&outputSem);
 	}
 }
 
 
 int main() {
-	sem_init(&outputSem, 0, 1);
 	if((logfd = open(logName, O_WRONLY|O_CREAT|O_TRUNC, 0664)) == -1){
 		printf("Error opening/creating file %s\n", logName);
 		return 1;
 	}
+	sem_init(&outputSem, 0, 1);
 	for(int i = 0; i < THREADCOUNT; i++) {
 		pthread_create(&threads[i], NULL, logger, (void *) i);
 	}
