@@ -319,6 +319,7 @@ void *distributor() {
 				sem_post(&o9);
 			}
 		}
+		usleep(10000); //cpu save
 	}
 }
 
