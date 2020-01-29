@@ -6,8 +6,6 @@
 #include <pthread.h>
 #include <semaphore.h> 
 
-//#include "aux_funcs.h"
-
 #define THREADCOUNT 10
 #define BUFFERSIZE 150
 
