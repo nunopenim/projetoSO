@@ -5,6 +5,9 @@
 #include <time.h>
 #include <semaphore.h>
 #include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
 #include <pthread.h>
 #include <unistd.h>
 
@@ -13,13 +16,26 @@
 
 #define THREADSIN 4
 #define THREADSOUT 10
-#define QUEUESIZE 196 //mudar
+#define QUEUESIZE 1024
+#define SHAREDMEM 196
 #define BUFFERSIZE 46
 
 //threading
 pthread_t threads_in[THREADSIN];
 pthread_t threads_out[THREADSOUT];
 pthread_t thread_dist;
+
+//memoria partilhada
+package* memoriaPartilhada[SHAREDMEM];
+int memPointer = 0;
+
+void addToMemory(package p) {
+	if(memPointer >= SHAREDMEM) {
+		memPointer = 0;
+	}
+	memoriaPartilhada[memPointer] = &p;
+	memPointer++;
+}
 
 //semaforos
 sem_t queueIn;
@@ -237,6 +253,7 @@ void *distributor() {
 			sem_wait(&queueIn);
 			package a = pop(dados, &dadosPointer);
 			sem_post(&queueIn);
+			addToMemory(a);
 			int dest = getAir(a.airport);
 			if (dest == -1) {
 				continue;
@@ -306,6 +323,14 @@ void *distributor() {
 }
 
 int main() {
+	key_t datakey;
+	datakey = 4321;
+	int shmid;
+	if ((shmid = shmget(datakey, SHAREDMEM * sizeof(package), IPC_CREAT | 0666)) < 0){
+		perror("shmget");
+		return 1;
+	}
+	package* memoriaPartilhada = shmat(shmid, NULL, 0);
 	//resets data structures
 	reset(dados, &dadosPointer);
 	reset(out0, &out0P);
