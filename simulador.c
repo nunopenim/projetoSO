@@ -13,7 +13,7 @@
 
 #define THREADSIN 4
 #define THREADSOUT 10
-#define QUEUESIZE 4096 //mudar
+#define QUEUESIZE 196 //mudar
 #define BUFFERSIZE 46
 
 //threading
