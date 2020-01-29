@@ -319,7 +319,9 @@ void *distributor() {
 				sem_post(&o9);
 			}
 		}
-		usleep(10000); //cpu save
+		if (dadosPointer == -1) {
+			sleep(2); //cpu save
+		}
 	}
 }
 
