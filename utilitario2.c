@@ -21,7 +21,6 @@ void *writeFifo(void *argum){
 	char * fifoname = (*args).fifoname;
 	int fdfile = (*args).fdfile;
 	int fifofd;
-	mkfifo(fifoname, 0666);
 	fifofd = open(fifoname, O_WRONLY);
 	read_write(fdfile, fifofd);
 	pthread_exit(NULL);
@@ -46,6 +45,10 @@ int main(int argc, char *argv[]){
 		printf("Error opening file %s\n", argv[3]);
 		return 1;
 	}
+	mkfifo("fifoin0", 0666);
+	mkfifo("fifoin1", 0666);
+	mkfifo("fifoin2", 0666);
+	mkfifo("fifoin3", 0666);
 	writeFifoArgs * args0 = malloc(sizeof(writeFifoArgs));
 	(*args0).fdfile = fd[0];
 	(*args0).fifoname = "fifoin0";
