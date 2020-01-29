@@ -28,6 +28,18 @@ pthread_t thread_dist;
 //memoria partilhada
 package * memoriaPartilhada[SHAREDMEM];
 int memPointer = 0;
+sem_t * memSem;
+
+void cleanMemory() {
+	for(int i = 0; i < SHAREDMEM; i++) {
+		(*memoriaPartilhada)[i].uuid[0] = '\0';
+		(*memoriaPartilhada)[i].peso[0] = '\0';
+		(*memoriaPartilhada)[i].airport[0] = '\0';
+		(*memoriaPartilhada)[i].entrada = 0;
+		(*memoriaPartilhada)[i].saida = 0;
+	}
+	memPointer = 0;
+}
 
 void addToMemory(package p) {
 	if(memPointer >= SHAREDMEM) {
@@ -327,14 +339,22 @@ void *distributor() {
 }
 
 int main() {
-	key_t datakey;
+	key_t datakey, mutexkey;
+	mutexkey = 1234;
 	datakey = 4321;
-	int shmid;
+	int shmid, mutid;
+	//pthread_mutex_init(mutexMem, NULL);
 	if ((shmid = shmget(datakey, SHAREDMEM * sizeof(package), IPC_CREAT | 0666)) < 0){
 		perror("shmget");
 		return 1;
 	}
+	if ((mutid = shmget(mutexkey, sizeof(sem_t), IPC_CREAT | 0666)) < 0){
+		perror("shmget");
+		return 1;
+	}
 	*memoriaPartilhada = shmat(shmid, NULL, 0);
+	memSem = shmat(mutid, NULL, 0);
+	cleanMemory();
 	//resets data structures
 	reset(dados, &dadosPointer);
 	reset(out0, &out0P);
