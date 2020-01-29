@@ -12,7 +12,7 @@
 #include <unistd.h>
 
 #include "entities.h"
-#include "aux_funcs.h"
+//#include "aux_funcs.h"
 
 #define THREADSIN 4
 #define THREADSOUT 10
