@@ -34,6 +34,7 @@ int main(int argc, char *argv[]){
 		return -1;
 	}
 	int fd[3];
+	//error processing
 	if((fd[0] = open(argv[1], O_RDONLY, 0666)) == -1){
 		printf("Error opening file %s\n", argv[1]);
 		return 1;
@@ -46,10 +47,12 @@ int main(int argc, char *argv[]){
 		printf("Error opening file %s\n", argv[3]);
 		return 1;
 	}
+	//fifo creator
 	mkfifo("fifoin0", 0666);
 	mkfifo("fifoin1", 0666);
 	mkfifo("fifoin2", 0666);
 	mkfifo("fifoin3", 0666);
+	//arguments
 	writeFifoArgs * args0 = malloc(sizeof(writeFifoArgs));
 	(*args0).fdfile = fd[0];
 	(*args0).fifoname = "fifoin0";
@@ -62,6 +65,7 @@ int main(int argc, char *argv[]){
     writeFifoArgs * args3 = malloc(sizeof(writeFifoArgs));
 	(*args3).fdfile = 0;
 	(*args3).fifoname = "fifoin3";
+	//threads, put it in cycle maybe
 	pthread_create(&threads[0], NULL, writeFifo, (void*) args0);
 	pthread_create(&threads[1], NULL, writeFifo, (void*) args1);
 	pthread_create(&threads[2], NULL, writeFifo, (void*) args2);
