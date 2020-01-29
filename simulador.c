@@ -4,6 +4,8 @@
 #include <fcntl.h>
 #include <time.h>
 #include <semaphore.h>
+#include <sys/stat.h>
+#include <pthread.h>
 #include <unistd.h>
 
 #include "entities.h"
@@ -134,61 +136,73 @@ void *terminal(void *_args) {
 	package *array;
 	int *pointer;
 	sem_t *sem;
+	char fifoname[10] = "fifoout";
 	if (air == 0) {
 		array = out0;
 		pointer = &out0P;
 		sem = &o0;
+		strcat(fifoname, "0");
 	}
 	else if (air == 1) {
 		array = out1;
 		pointer = &out1P;
 		sem = &o1;
+		strcat(fifoname, "1");
 	}
 	else if (air == 2) {
 		array = out2;
 		pointer = &out2P;
 		sem = &o2;
+		strcat(fifoname, "2");
 	}
 	else if (air == 3) {
 		array = out3;
 		pointer = &out3P;
 		sem = &o3;
+		strcat(fifoname, "3");
 	}
 	else if (air == 4) {
 		array = out4;
 		pointer = &out4P;
 		sem = &o4;
+		strcat(fifoname, "4");
 	}
 	else if (air == 5) {
 		array = out5;
 		pointer = &out5P;
 		sem = &o5;
+		strcat(fifoname, "5");
 	}
 	else if (air == 6) {
 		array = out6;
 		pointer = &out6P;
 		sem = &o6;
+		strcat(fifoname, "6");
 	}
 	else if (air == 7) {
 		array = out7;
 		pointer = &out7P;
 		sem = &o7;
+		strcat(fifoname, "7");
 	}
 	else if (air == 8) {
 		array = out8;
 		pointer = &out8P;
 		sem = &o8;
+		strcat(fifoname, "8");
 	}
 	else if (air == 9) {
 		array = out9;
 		pointer = &out9P;
 		sem = &o9;
+		strcat(fifoname, "9");
 	}
 	else {
 		pthread_exit(NULL); //rebentar com a thread, poupar um segfault 
 	}
 	while(1) {
 		while (*pointer > -1) {
+			int fifofd = open(fifoname, O_WRONLY);
 			package a = pop(array, pointer);
 			char fifoString[90];
 			a.saida = time(NULL);
@@ -276,6 +290,7 @@ void *distributor() {
 }
 
 int main() {
+	//resets data structures
 	reset(dados, &dadosPointer);
 	reset(out0, &out0P);
 	reset(out1, &out1P);
@@ -287,7 +302,9 @@ int main() {
 	reset(out7, &out7P);
 	reset(out8, &out8P);
 	reset(out9, &out9P);
-	sleep(1); //syncronism;
+	//syncronism
+	sleep(1);
+	//semaphores
 	sem_init(&queueIn, 0, 1);
 	sem_init(&o0, 0, 1);
 	sem_init(&o1, 0, 1);
@@ -299,6 +316,17 @@ int main() {
 	sem_init(&o7, 0, 1);
 	sem_init(&o8, 0, 1);
 	sem_init(&o9, 0, 1);
+	//fifos
+	mkfifo("fifoout0", 0666);
+	mkfifo("fifoout1", 0666);
+	mkfifo("fifoout2", 0666);
+	mkfifo("fifoout3", 0666);
+	mkfifo("fifoout4", 0666);
+	mkfifo("fifoout5", 0666);
+	mkfifo("fifoout6", 0666);
+	mkfifo("fifoout7", 0666);
+	mkfifo("fifoout8", 0666);
+	mkfifo("fifoout9", 0666);
 	for (int i = 0; i < THREADSIN; i++) {
 		pthread_create(&threads_in[i], NULL, collector, (void *) i);
 	}
