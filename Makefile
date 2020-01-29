@@ -5,7 +5,7 @@
 CC=gcc
 FLAGS_OBJ1=-lpthread -luuid
 FLAGS_OBJ2=-lpthread
-FLAGS_OBJ3=-lpthread -luuid
+FLAGS_OBJ3=-lpthread
 OBJ1=utilitario1.c
 OBJ2=utilitario2.c
 OBJ3=simulador.c

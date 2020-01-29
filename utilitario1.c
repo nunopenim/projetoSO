@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include "entities.h"
-#include "aux_funcs.h"
+#include "uuid_gen.h"
 
 #define STRSIZE 45
 
