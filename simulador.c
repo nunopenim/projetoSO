@@ -240,6 +240,7 @@ void *terminal(void *_args) {
 				write(fifofd, fifoString, 68);
 			}
 		}
+		usleep(10000);
 	}
 	
 }
