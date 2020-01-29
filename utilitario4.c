@@ -14,7 +14,7 @@
 #define SHAREDMEM 196
 
 //memoria partilhada
-package* memoriaPartilhada[SHAREDMEM];
+package * memoriaPartilhada[SHAREDMEM];
 
 int main() {
 	key_t memkey;
@@ -24,10 +24,10 @@ int main() {
 		perror("shmget");
 		return 1;
 	}
-	package* memoriaPartilhada = shmat(memid, NULL, 0);
+	*memoriaPartilhada = shmat(memid, NULL, 0);
 	for (int i = 0; i < SHAREDMEM; i++) {
-		if (memoriaPartilhada[i].entrada != 0) {
-			printf("%s,%ld\n", memoriaPartilhada[i].uuid, memoriaPartilhada[i].entrada);
+		if((*memoriaPartilhada)[i].entrada != 0) {
+			printf("%s,%ld\n", (*memoriaPartilhada)[i].uuid, (*memoriaPartilhada)[i].entrada);
 		}
 	}
 	return 0;

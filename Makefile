@@ -20,7 +20,7 @@ OBJ4_EXEC=util4
 
 SIM_EXEC=sim
 
-all: utilitario1 utilitario2 simulador utilitario3
+all: utilitario1 utilitario2 simulador utilitario3 utilitario4
 
 utilitario1: 
 	$(CC) $(OBJ1) -o $(OBJ1_EXEC) $(FLAGS_COMMON) $(FLAGS_EXOTIC)

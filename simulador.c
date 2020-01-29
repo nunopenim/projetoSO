@@ -26,14 +26,14 @@ pthread_t threads_out[THREADSOUT];
 pthread_t thread_dist;
 
 //memoria partilhada
-package* memoriaPartilhada[SHAREDMEM];
+package * memoriaPartilhada[SHAREDMEM];
 int memPointer = 0;
 
 void addToMemory(package p) {
 	if(memPointer >= SHAREDMEM) {
 		memPointer = 0;
 	}
-	memoriaPartilhada[memPointer] = &p;
+	(*memoriaPartilhada)[memPointer] = p;
 	memPointer++;
 }
 
@@ -334,7 +334,7 @@ int main() {
 		perror("shmget");
 		return 1;
 	}
-	package* memoriaPartilhada = shmat(shmid, NULL, 0);
+	*memoriaPartilhada = shmat(shmid, NULL, 0);
 	//resets data structures
 	reset(dados, &dadosPointer);
 	reset(out0, &out0P);
