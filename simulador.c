@@ -265,9 +265,7 @@ void *distributor() {
 			sem_wait(&queueIn);
 			package a = pop(dados, &dadosPointer);
 			sem_post(&queueIn);
-			sem_wait(memSem);
 			addToMemory(a);
-			sem_post(memSem);
 			int dest = getAir(a.airport);
 			if (dest == -1) {
 				continue;

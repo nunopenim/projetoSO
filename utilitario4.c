@@ -32,11 +32,9 @@ int main() {
 	*memoriaPartilhada = shmat(memid, NULL, 0);
 	memSem = shmat(mutexid, NULL, 0);
 	for (int i = 0; i < SHAREDMEM; i++) {
-		sem_wait(memSem);
 		if((*memoriaPartilhada)[i].entrada != 0) {
 			printf("%s,%ld\n", (*memoriaPartilhada)[i].uuid, (*memoriaPartilhada)[i].entrada);
 		}
-		sem_post(memSem);
 	}
 	return 0;
 }
